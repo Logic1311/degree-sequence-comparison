@@ -1,0 +1,37 @@
+{
+  "prior_commit": "06f2690eeb45da32627de6bf98a537039b00677d",
+  "prior_zip_sha256": "e19053b5480b2685a0362fe661295d83c614b91462033f95aaca13dea19679ce",
+  "verification": {
+    "checks": {
+      "archived_even_degree_vectors": 151,
+      "direct_DP_even_vectors": 224,
+      "scalar_sizes": 1995,
+      "exhaustive_connected_graphs": 1491,
+      "seeded_connected_graphs": 200,
+      "bit_free_marks": 23480,
+      "switch_replay": 21980
+    },
+    "exhaustive_replay": {
+      "instances": 20480,
+      "empty_switches": 10240,
+      "full_switches": 10240,
+      "distinct_outputs": 20400,
+      "max_observed_fiber": 2
+    },
+    "seeded_replay": {
+      "instances": 1500,
+      "merged_pairs": 3000,
+      "full_switches": 2400,
+      "empty_switches": 600,
+      "largest_n": 87,
+      "max_pairs": 4
+    },
+    "note": "Degree counts and switches replay archived inputs; cut graph checks and scalar sizes newly generated."
+  },
+  "new_verifier_exit": 0,
+  "pdf_pages": 8,
+  "latex_passes": 2,
+  "status": "TECHNICAL_PASS",
+  "formal_scope": "original partial Lean evidence unchanged; new proofs analytical",
+  "academic_grade": "A-priority candidate, not independently certified"
+}
