@@ -1,0 +1,205 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=27mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,booktabs,microtype,hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{remark}\newtheorem{remark}[theorem]{Remark}
+\newcommand{\De}{D_{\mathrm e}}
+\newcommand{\Pdeg}{P(d)}
+\newcommand{\EO}{\mathcal E}
+\newcommand{\HF}{\mathcal B}
+\title{A degree-sensitive comparison of graphs and balanced digraphs:\\ a proof of Mehrdad's degree-sequence counting conjecture}
+\author{AI-assisted research manuscript\\\small Human authorship and affiliations pending verification}
+\date{26 November 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+For a graphical degree sequence $d$ on $n$ labelled vertices, let $G(d)$ count simple undirected realizations and $D(d)$ count loopless simple directed realizations with both in- and out-degree sequence $d$, allowing opposite arcs. We establish the finite comparison
+\[
+ G(d)^2\le D(d)\le 4^n G(d)^2\prod_{i=1}^n\max\{1,\min(d_i,n-1-d_i)\}.
+\]
+In particular, for positive degrees and $M=\tfrac12\sum_i d_i$, we prove Mehrdad's November 2026 Conjecture 1.1 with the absolute constant $C=1$: $G(d)\ge \sqrt{D(d)}(2+M/n)^{-n}$. The two changes to the preceding Euler-colouring approach are a last-exit count of single-tour transition systems and a component-local inverse code for odd-component repairs. Neither requires an asymptotic enumeration formula or degree regularity. Combined with existing maximum-entropy estimates for digraphs, the result yields a uniform graph entropy deficit of order $n\log(2+M/n)$ and cut concentration at every diverging average degree. We provide exact enumeration, independent adjacency-matrix counts, switching round trips, and a partial formal verification of the algebraic kernels. The manuscript does not claim the stronger polynomial-loss conjecture or independent peer review.
+\end{abstract}
+
+\section{Problem and results}
+Let $n\ge1$ and $d=(d_1,\ldots,d_n)$ with $0\le d_i\le n-1$, all integers. Write $M=\tfrac12\sum_i d_i$. Graphs are labelled, have no loops or multiple edges; digraphs have no loops or repeated ordered arcs, but may contain both directions on an unordered pair. The functions $G(d)$ and $D(d)$ count graphs of degree $d$ and digraphs with both degree margins equal to $d$, respectively. Write
+\[
+ P(d)=\prod_{i=1}^n\max\{1,\min(d_i,n-1-d_i)\}.
+\]
+The comparison problem was posed in \cite[Conjecture 1.1]{mehrdad26}. Its general theorem bounds the logarithmic loss by $O(n\log n\log(2+M/n))$; previous asymptotic enumeration covers important special regimes \cite{barvinokhartigan,liebenauwormald}. The goal is a uniform bound without the extra $\log n$.
+\begin{theorem}[Finite degree-sensitive comparison]\label{thm:main}
+If $\sum_i d_i$ is even, then
+\begin{equation}\label{eq:main}
+G(d)^2\le D(d)\le 4^nP(d)G(d)^2.
+\end{equation}
+The left inequality in fact holds without the parity assumption. If $d_i\ge1$ for all $i$, then
+\begin{equation}\label{eq:conj}
+G(d)\ge \frac{\sqrt{D(d)}}{(2+M/n)^n}.
+\end{equation}
+\end{theorem}
+The parity requirement for the right inequality cannot simply be omitted: on three vertices the degree vector $(1,1,1)$ has directed realizations but no undirected realization. The factor $P(d)$ is invariant under graph complementation. No claim is made that $4^n$ or the exponent of $P(d)$ is optimal. The theorem gives the requested conjecture, rather than the still stronger polynomial-loss proposal discussed in \cite{mehrdad26}.
+
+\section{Exact decomposition into two counting problems}
+For a balanced digraph let $H$ be the graph of unordered pairs carrying both arcs, and let $O$ be its remaining directed arcs. The latter form an orientation of a simple graph $S$ disjoint from $H$. At vertex $i$ put $h_i=\deg_H(i)$ and $c_i=d_i-h_i$. The in- and out-degrees in $O$ both equal $c_i$, and $\deg_S(i)=2c_i$. Conversely any such $H,S$ together with an Eulerian orientation of $S$ determines a balanced digraph.
+
+For an even-degree graph $S$, let $\EO(S)$ count its Eulerian orientations (equal in- and out-degree at every vertex) and let $\HF(S)$ count the subsets of edges whose degree at each vertex is half that in $S$. The complement in $S$ has the same degree; we regard this as an ordered red/blue colouring. Over all disjoint pairs $(H,S)$ satisfying $\deg_H(i)+\deg_S(i)/2=d_i$, we have
+\begin{equation}\label{eq:decomposition}
+ D(d)=\sum_{H,S}\EO(S),\qquad G(d)^2=\sum_{H,S}\HF(S).
+\end{equation}
+For the second equality, start with an ordered pair of graphs of degree $d$. Their intersection is $H$, symmetric difference is $S$, and the red edges of $S$ are precisely the edges belonging to the first graph. The construction reverses uniquely. Isolated vertices and the empty graph $S$ are permitted; all empty products are one. If a nontrivial connected component of $S$ has an odd number of edges, no half-factor exists, because summing its prescribed red degrees gives that odd number, while twice its red edge count is even.
+
+\section{Single-tour transition systems}\label{sec:tours}
+At every vertex of an even-degree graph $S$, pair its $2c_i$ incident edge ends into $c_i$ unordered pairs. Together these local pairings give a transition system: entering along one edge forces departure along its paired edge. Formally, consider the graph on edge ends with one matching linking the two ends of each edge and another matching of paired ends at each vertex. Its alternating cycles determine closed trails, each undirected edge occurring in exactly one trail. A trail may revisit vertices. It has exactly two directed traversals and, if its length is even, two alternating red/blue colourings. These choices are independent between trails. A directed traversal of every trail produces a balanced orientation compatible with the pairings, and an alternating colouring produces a half-factor compatible with the pairings. Conversely the pairing is compatible with an orientation precisely when each pair consists of an incoming and an outgoing edge, and compatible with a colouring precisely when each pair consists of one red and one blue edge. The resulting choices are bijective, including trails that revisit vertices: the matching specifies the continuations, so fixing an orientation or alternating colour at one edge specifies all others in its trail.
+
+For a fixed Eulerian orientation, there are exactly $F=\prod_i c_i!$ compatible pairings; for a fixed half-factor the same number holds. For each pairing with $t$ trails, the orientation multiplicity is $2^t$, while the colouring multiplicity is $2^t$ if all trails are even and zero otherwise. Summing proves
+\begin{equation}\label{eq:known}
+ \HF(S)\le\EO(S).
+\end{equation}
+This inequality is a known half-factor/orientation comparison \cite{borbenyi,csikvariimolay}; the pairing argument is included for completeness.
+
+The complementary bound below is the first new step relative to the Euler-colouring proof in \cite[Section 9]{mehrdad26}.
+\begin{lemma}[Last-exit bound]\label{lem:last}
+Let $O$ be an Eulerian orientation of a nontrivial connected simple graph with positive out-degrees $c_i$. The number of compatible transition systems giving exactly one closed trail is at least $\prod_i(c_i-1)!$.
+\end{lemma}
+\begin{proof}
+A finite weakly connected balanced digraph is strongly connected. Indeed for the vertices reachable from a fixed vertex, no arc leaves the reachable set; balance of its total margins then excludes incoming arcs as well, so weak connectivity forces the set to be the entire component. Fix a vertex $r$ and an outgoing arc $e$ at $r$. Choose an in-arborescence to $r$ (for example, at each nonroot vertex choose an arc reducing its directed distance to $r$). For every nonroot vertex order the outgoing arcs with its tree arc last; order root arcs with $e$ first. These choices give exactly $\prod_i(c_i-1)!$ lists.
+
+Start at $r$ and follow the first unused outgoing arc in the relevant list at each visit. It cannot stop at a nonroot vertex: a trail from $r$ to a different vertex has one more used incoming than used outgoing arc there, contradicting exhaustion of its equally many outgoing arcs. If the walk stops at $r$, it is closed and the remaining unused arcs have balanced margins. If a nonroot vertex has any unused outgoing arc, its last-exit tree arc is unused. Its parent then has an unused incoming arc, hence an unused outgoing arc. Following the tree forces an unused outgoing arc at $r$, contradicting termination. If any unused arcs exist, some vertex has unused out-degree, so this argument exhausts all arcs.
+
+This walk defines one cyclic transition system. Starting the directed cyclic traversal with the prescribed arc $e$ reconstructs the outgoing lists, giving injectivity. This is the elementary last-exit construction underlying the classical BEST theorem (see, e.g., \cite{creedcryan}); we need only one fixed arborescence, not its count.
+\end{proof}
+\begin{lemma}[Even-component comparison]\label{lem:even}
+Suppose each nontrivial connected component of $S$ has an even number of edges. Then
+\begin{equation}\label{eq:even}
+ \EO(S)\le \HF(S)\prod_{i=1}^n\max(1,c_i).
+\end{equation}
+\end{lemma}
+\begin{proof}
+Restrict to transition systems with precisely one closed trail per nontrivial component. Every such system has exclusively even trails. Its number of compatible orientations therefore equals its number of compatible half-factors, namely $2^k$ for $k$ nontrivial components. Summed over the restricted systems, the two incidence counts are equal. By Lemma~\ref{lem:last} the orientation incidence count is at least
+\[\EO(S)\prod_{i:c_i>0}(c_i-1)!,\]
+and the colouring incidence count is at most $\HF(S)\prod_i c_i!$. Dividing proves the claim, with isolated vertices contributing the factor one. The assertion for an empty $S$ follows by the empty-product convention.
+\end{proof}
+
+Define $\De(d)$ to be the number of balanced digraphs for which the graph of single-arc pairs has only even-edge nontrivial components. Applying \eqref{eq:even} in \eqref{eq:decomposition}, and observing that $n-1\ge h_i+2c_i$ and $d_i=h_i+c_i$, gives
+\begin{equation}\label{eq:De}
+ \De(d)\le P(d)G(d)^2.
+\end{equation}
+In particular this avoids a factor depending on the total number of transitions at distant vertices. We next control the cost of converting all other balanced digraphs into these.
+
+\section{Odd-component repair with a local inverse code}\label{sec:repair}
+The existence of a compatible two-component switch is the parity mechanism of \cite[Lemma 9.5]{mehrdad26}. We give the construction explicitly; the new count is in Lemma~\ref{lem:fibers}.
+\begin{lemma}[Compatible arcs]\label{lem:compat}
+Let $C_1,C_2$ be two distinct nontrivial weak components of $O$, each with an odd number of arcs. There exist arcs $a\to b$ in $C_1$ and $c\to e$ in $C_2$ such that the cross unordered pairs $\{a,e\},\{b,c\}$ are either both empty or both double in the original balanced digraph.
+\end{lemma}
+\begin{proof}
+All cross pairs are empty or double, because a single cross arc would connect the two components. Take directed Euler tours of the two components (existence follows from the last-exit construction) and denote their successive vertices $a_i$ and $b_j$, of odd periods $\ell_1,\ell_2$. Let $x_{ij}$ be one if the cross pair $\{a_i,b_j\}$ is double and zero otherwise. If no compatible arcs exist, then for every $i,j$,
+\[x_{i,j+1}=1-x_{i+1,j}.\]
+Thus shifting indices by $(1,-1)$ flips the binary value. Applying this shift $\ell_1\ell_2$ times returns to the original pair of indices, but flips an odd number of times, a contradiction. Repeated vertices in a tour cause no difficulty because the array is periodic in tour positions. The two selected arcs have four distinct endpoints because the components are disjoint and loops are forbidden.
+\end{proof}
+
+If the cross pairs are empty, remove $a\to b,c\to e$ and insert $a\to e,c\to b$. If they are double, remove $b\to c,e\to a$ and insert $b\to a,e\to c$. Both operations preserve each directed degree margin, have no loops, and insert only arcs previously absent. In the latter case the two old single pairs become double, and the two old double cross pairs become single. In either case the single-arc support changes by the same directed replacement
+\begin{equation}\label{eq:replace}
+ (a\to b,c\to e)\longmapsto(a\to e,c\to b).
+\end{equation}
+Deleting the chosen arc from each original Euler tour gives a trail from its head to its tail, using every other arc. The two new cross arcs connect those trails into one closed trail. Consequently the two original components merge into exactly one component on their union of vertices, with even arc count $\ell_1+\ell_2$. Every other single-arc component is unchanged.
+
+Because the total number of directed arcs is $\sum_i d_i$, which is even, the number of single arcs is also even (double pairs contribute two arcs). Thus the number of odd components is even. Order those components by their smallest label and pair consecutive ones. In each pair choose the lexicographically first compatible ordered pair of arcs, ordering the components by smallest label. Apply the indicated switch. The paired unions are vertex-disjoint, so the operations do not interfere. This defines a deterministic repair map from the full class counted by $D(d)$ to the class counted by $\De(d)$.
+
+\begin{lemma}[Component-local inverse code]\label{lem:fibers}
+Each output of the repair map has at most $4^n$ preimages.
+\end{lemma}
+\begin{proof}
+Each final nontrivial single-arc component is either unchanged, or is the union of two original odd components. A newly merged component has at least six vertices. Each original component contains a directed cycle of length at least three because $O$ has neither loops nor opposite arcs. For a final component $C$ with $s$ vertices and $\ell$ arcs, record either an unchanged mark, or an unordered pair of distinct arcs and one binary switch type. The two marked arcs are precisely the inserted single arcs $a\to e,c\to b$ of \eqref{eq:replace}. If the switch was of empty type, invert by deleting these arcs and adding $a\to b,c\to e$. If of double type, invert by deleting $b\to a,e\to c$ and adding $b\to c,e\to a$. Interchanging the two marked arcs interchanges the two originals in these formulas, so their order is unnecessary. The full output digraph, not only its single-arc support, is retained; therefore the double arcs are recovered exactly. For a valid mark the inverse changes only pairs within $C$. All components can be decoded independently. In particular the input is uniquely determined by the output and these local marks. Marks which are not valid switch inverses may be counted without harming the upper bound.
+
+For $s<6$ there is only the unchanged option. For $s\ge6$ the number of possible marks is at most
+\[
+ 1+2\binom{\ell}{2}=1+\ell(\ell-1)\le s^4\le4^s.
+\]
+Here $\ell\le s(s-1)/2$ because the component is an orientation of a simple graph. The middle bound also follows from $\ell\le s^2$ and $\ell\ge1$. For the last inequality, $4^4=4^4$ at $s=4$, and the ratio $((s+1)/s)^4\le(5/4)^4<4$ for $s\ge4$. For $s<6$ the single mark is likewise at most $4^s$. Multiplying over disjoint final components gives $\prod_C4^{|C|}\le4^n$. No global list of the original pairs, orders of switches, or global choices of endpoints is needed. Isolated vertices of the final support cannot have belonged to a repaired union and require no marks.
+\end{proof}
+\begin{corollary}\label{cor:repair}
+For even total degree, $D(d)\le4^n\De(d)$.
+\end{corollary}
+\begin{proof}
+Sum the fibre bound over the output class. The result includes the empty class case.
+\end{proof}
+
+\section{Proof of the comparison theorem}
+Combining \eqref{eq:known} with \eqref{eq:decomposition} gives the first inequality of \eqref{eq:main}. The right inequality follows from Corollary~\ref{cor:repair} and \eqref{eq:De}. If $d_i\ge1$, then $P(d)\le\prod_i d_i\le(2M/n)^n$ by the arithmetic--geometric mean inequality. Therefore
+\[
+ \sqrt{D(d)}\le G(d)\left(2\sqrt{2M/n}\right)^n\le G(d)(2+M/n)^n,
+\]
+where the last step is the identity $(2+x)^2-8x=(x-2)^2\ge0$ for $x=M/n\ge0$. This proves \eqref{eq:conj}, exactly the stated conjecture with $C=1$. For graphical $d$ one has $G(d)>0$, and \eqref{eq:main} also yields the explicit logarithmic estimate
+\[
+ 0\le\log D(d)-2\log G(d)\le n\log4+\sum_i\log\max\{1,\min(d_i,n-1-d_i)\}.
+\]
+The estimate is symmetric between $d$ and its complementary sequence, since taking graph or digraph complements gives bijections of realizations. It allows degree-zero and degree-$n-1$ vertices in the product formulation. The lower inequality is not claimed as a new orientation inequality. The proof of the upper comparison is combinatorial and uses no entropy estimate.
+
+\section{Entropy and uniform random graphs}\label{sec:entropy}
+We state two consequences, separating the earlier entropy input from the new combinatorial estimate. Let $d$ be graphical with positive degrees. Let $w^*=(w_{ij}^*)$ maximize $g(w)=\sum_{i<j}[-w_{ij}\log w_{ij}-(1-w_{ij})\log(1-w_{ij})]$ over symmetric zero-diagonal matrices with entries in $[0,1]$ and row sums $d$. Write $g^*=g(w^*)$ and let $\pi(d)$ be the probability that the independent Bernoulli graph with edge probabilities $w_{ij}^*$ has exact degree sequence $d$. We invoke \cite[Theorems 4.2 and 6.1]{mehrdad26}:
+\begin{equation}\label{eq:entropyinput}
+ \pi(d)=G(d)e^{-g^*},\qquad
+ D(d)\ge e^{2g^*}(7e)^{-n}\prod_i(1+d_i)^{-1}.
+\end{equation}
+Both estimates are prior results, not claims of this manuscript. The first identity comes from the equal likelihood of exact-degree realizations under the independent entropy maximizer. Frozen coordinates on the boundary of the feasible polytope do not change it.
+\begin{corollary}[Entropy deficit]\label{cor:entropy}
+Under these assumptions,
+\begin{align}
+ \pi(d)&\ge (2\sqrt{7e})^{-n}\left[P(d)\prod_i(1+d_i)\right]^{-1/2}\notag\\
+ &\ge (2\sqrt{7e})^{-n}\prod_i(1+d_i)^{-1},\label{eq:pi}\\
+ -\log\pi(d)&\le n\log(2\sqrt{7e})+n\log(1+2M/n).\label{eq:K}
+\end{align}
+\end{corollary}
+\begin{proof}
+Insert \eqref{eq:entropyinput} into \eqref{eq:main}, take square roots and multiply by $e^{-g^*}$. Since $P(d)\le\prod_i(1+d_i)$, the second bound follows. The logarithmic estimate uses concavity of the logarithm. Degree-zero vertices can be removed before applying the estimate: all their incident edges and arc pairs are forced absent, their entropy is zero, and padding the right-hand side by the corresponding factors only weakens the inequality.
+\end{proof}
+In particular \eqref{eq:K} yields the $O(n\log n)$ entropy loss previously formulated for strictly graphical sequences in \cite[Conjecture 2.13, version 4]{mehrdad14}. It also supplies the hypothesis for that paper's Proposition 2.15 (strict graphic and total degree at least $n$, in its own notation), establishing the tree-statistics consequence in its Conjecture 2.14 within the stated class. We use that proposition as a prior result, not as an independently rederived tree-density theorem.
+
+For an $n\times n$ symmetric matrix $A$ define $W^A$ to be its equal-block step kernel on $[0,1]^2$ with the fixed label order. Define $\|W\|_\square=\sup_{S,T\subset[0,1]}|\int_{S\times T} W|$ with measurable sets. For step kernels the maximum is attained on unions of blocks: the integral is bilinear in the fractions selected from each block, so the maximum and minimum over the two unit cubes occur at vertices.
+\begin{corollary}[Cut concentration at diverging average degree]\label{cor:cut}
+Let $G_d$ be a uniform graph of graphical degree $d$ with $M>0$, $\rho=2M/n^2$, and $K=-\log\pi(d)$. For $0<\epsilon\le1$,
+\begin{equation}\label{eq:cut}
+ \Pr\left(\|W^{G_d}-W^{w^*}\|_\square\ge\epsilon\rho\right)
+ \le 2\exp\left(n\log4+K-\epsilon^2M/3\right).
+\end{equation}
+Consequently if $M/n\to\infty$, the normalized cut difference tends to zero in probability, with upper stochastic order $\sqrt{\log(2+M/n)/(M/n)}$.
+\end{corollary}
+\begin{proof}
+Write $Y_{ij}$ for independent Bernoulli variables of means $w_{ij}^*$, $i<j$. For fixed vertex subsets $S,T$, the unnormalized cut discrepancy is $\sum_{i<j}a_{ij}(Y_{ij}-w_{ij}^*)$, with $a_{ij}=\mathbf1_{i\in S,j\in T}+\mathbf1_{j\in S,i\in T}\in\{0,1,2\}$. Summands have absolute value at most two, and total variance at most $4\sum_{i<j}w^*_{ij}=4M$. The two-sided Bernstein bound at $2\epsilon M$ gives a probability at most $2\exp[-\epsilon^2M/(2(1+\epsilon/3))]\le2e^{-\epsilon^2M/3}$ for $\epsilon\le1$. Union over the at most $4^n$ ordered cuts. Conditioning on the exact-degree event gives the uniform model by \eqref{eq:entropyinput} and increases a probability by at most $1/\pi(d)=e^K$. This proves \eqref{eq:cut}. Equation \eqref{eq:K}, with zero-degree vertices removed if necessary, gives $n\log4+K=O(n\log(2+M/n))=o(M)$ when $M/n\to\infty$. Choosing a sufficiently large constant multiple of the stated rate in \eqref{eq:cut} gives the stochastic-order assertion. Thus the extra density restriction in \cite[Corollary 10.4]{mehrdad26} is unnecessary.
+\end{proof}
+
+\section{Exact tests and scope of formalization}
+The analytical arguments in Sections~\ref{sec:tours}--\ref{sec:repair} supply the proof for arbitrary finite graphs. The tests are intended to detect mistakes in the local combinatorial correspondences, not to replace those arguments.
+\begin{center}
+\begin{tabular}{lr}
+\toprule
+Test family & Exact count\\
+\midrule
+Labelled simple graphs, $1\le n\le6$ & 33,867\\
+Even-degree supports, $1\le n\le6$ & 1,100\\
+Labelled graphical degree vectors & 7,542\\
+Direct row-DP replay, previously counted sorted vectors & 242\\
+Additional direct row-DP vectors, $n=7,8$ & 76\\
+Two odd triangle components, full cross-pair exhaustion & 20,480\\
+Seeded composite switch round trips (up to 87 vertices) & 1,500\\
+Exhaustive/seeded connected Eulerian orientations & 176/250\\
+\bottomrule
+\end{tabular}
+\end{center}
+The first script enumerates undirected masks, oriented supports and their disjoint double-edge graphs. It independently counts Eulerian orientations and half-factors from bit patterns and reconstructs the exact degree-sequence tables. It checks the two comparisons, the even-total feasibility condition, complement symmetry and the squared integer version of \eqref{eq:conj}. The resulting tables represent 1,383,853 balanced digraphs in aggregate, not that many individually iterated adjacency matrices. A second program computes the directed count directly from rows of a zero-diagonal adjacency matrix with remaining column sums, and the undirected count by vertex deletion. The 242 replayed sorted vectors are not new samples. The 76 additional vectors include cases for which undirected enumeration is much smaller than the directed count; see the stored input/output records. The switch verifier checks both types, component merging, degree margins, binary legality, marked injectivity and the exact inverse on the original full arc sets. The tour verifier enumerates the directed tour orders and local systems, checks the last-exit construction and the exact BEST count. Seeded composite tests and earlier exhaustive instances overlap with other test categories, so no combined independence count is claimed.
+
+\section{Relation to previous work and limitations}
+The proof is not a new derivation of the classical BEST theorem, the half-factor/orientation comparison or the existence of odd-component switches. Relative to \cite[Section 9]{mehrdad26}, the two specific additions are (i) restricting to one tour per component and using the last-exit count instead of bounding a general sequence of tour mergers and (ii) a component-local inverse code with exponential total cost instead of a global endpoint-choice estimate. The combination gives the stated conjecture and a complement-sensitive finite product estimate. The entropy and cut consequences use the earlier directed-matrix lower bound. Targeted searches of degree-sequence enumeration, Eulerian orientations, half-factors, switchings and the named conjecture did not identify an earlier proof of this general comparison in the sources examined. The accompanying prior-art log specifies access and search limitations. This is not a claim of exhaustive novelty or peer review. The complete-host assumption is used in the repair step, and forbidden-position versions are not proved here. No asymptotic equality, optimal universal constant, or polynomial-loss comparison is asserted. The Lean companion checks selected algebraic and parity steps, not the full graph-theoretic theorem; the analytical proof is the primary mathematical argument.
+
+\begin{thebibliography}{9}
+\bibitem{mehrdad26} B. Mehrdad, \emph{Graphs versus loopless digraphs with a given degree sequence, and convergence of uniformly random graphs at every density}, arXiv:2611.02191v1 (1 November 2026). \url{https://arxiv.org/abs/2611.02191}.
+\bibitem{mehrdad14} B. Mehrdad, \emph{Trees in Random Sparse Graphs with a Given Degree Sequence}, arXiv:1401.0220, version 4 (8 November 2026; conjectures and proposition numbered as in that version). \url{https://arxiv.org/abs/1401.0220}.
+\bibitem{borbenyi} M. Borb\'enyi and P. Csikv\'ari, \emph{Counting degree-constrained subgraphs and orientations}, Discrete Mathematics \textbf{343} (2020), 111842. \href{https://doi.org/10.1016/j.disc.2020.111842}{doi:10.1016/j.disc.2020.111842}.
+\bibitem{csikvariimolay} P. Csikv\'ari and A. Imolay, \emph{Covers, orientations and factors}, Electronic Journal of Combinatorics \textbf{27}(3) (2020), P3.25. \href{https://doi.org/10.37236/8767}{doi:10.37236/8767}.
+\bibitem{barvinokhartigan} A. Barvinok and J. A. Hartigan, \emph{The number of graphs and a random graph with a given degree sequence}, Random Structures \& Algorithms \textbf{42} (2013), 301--348. \href{https://doi.org/10.1002/rsa.20409}{doi:10.1002/rsa.20409}.
+\bibitem{liebenauwormald} A. Liebenau and N. Wormald, \emph{Asymptotic enumeration of graphs by degree sequence, and the degree sequence of a random graph}, Journal of the European Mathematical Society \textbf{26} (2024), 1--40. \href{https://doi.org/10.4171/JEMS/1355}{doi:10.4171/JEMS/1355}.
+\bibitem{creedcryan} P. Creed and M. Cryan, \emph{The number of Euler tours of random directed graphs}, Electronic Journal of Combinatorics \textbf{20}(3) (2013), P13. \url{https://www.combinatorics.org/ojs/index.php/eljc/article/view/v20i3p13}.
+\end{thebibliography}
+\end{document}
